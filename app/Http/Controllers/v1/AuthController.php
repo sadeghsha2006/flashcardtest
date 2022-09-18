@@ -8,6 +8,8 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth; 
 use Illuminate\Support\Facades\Validator;
 use Laravel\Passport\RefreshTokenRepository;
+use Illuminate\Validation\Rules\Password;
+
 
 class AuthController extends Controller
 {
@@ -32,10 +34,19 @@ class AuthController extends Controller
 
     public function register(Request $request) { 
         $validator = Validator::make($request->all(), [ 
-            'name' => 'required', 
-            'email' => 'required|email|unique:users', 
-            'password' => 'required', 
-            'password_confirm' => 'required|same:password', 
+            'name' => 'required|max:255', 
+            'email' => 'required|email|unique:users|max:255', 
+            'password' =>[
+                'required',
+                'confirmed',
+                Password::min(8)
+                    ->mixedCase()
+                    ->letters()
+                    ->numbers()
+                    ->symbols()
+                    ->uncompromised(),
+            ], 
+            
         ]);
         if ($validator->fails()) { 
             return response()->json(['error'=>$validator->errors()], 400);            
