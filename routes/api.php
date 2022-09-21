@@ -19,11 +19,9 @@ Route::prefix('v1')->group(function(){
     Route::post('sign-up', [AuthController::class,'register']);
     Route::post('refresh-token',[AuthController::class,'refreshToken']);
    });
-   Route::prefix('v1')->middleware('auth:api')->group(function () {
+   Route::middleware(['auth:api'])->prefix('v1')->group(function () {
     Route::get('logout',[AuthController::class,'logout']);
     Route::get('user',[AuthController::class,'getUser']);
 });
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+
